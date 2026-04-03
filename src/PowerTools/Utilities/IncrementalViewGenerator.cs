@@ -242,6 +242,13 @@ namespace Microsoft.DbContextPackage.Utilities
 
             CheckForErrors(errors);
 
+            // Resolve the C-side container name for building proper keys
+            string containerName = null;
+            if (containerMapping != null)
+            {
+                containerName = (string)containerMapping.EdmEntityContainer.Name;
+            }
+
             // Merge: update existing groups that had changed sets
             foreach (var group in existingCache.Groups)
             {
@@ -264,9 +271,11 @@ namespace Microsoft.DbContextPackage.Utilities
                             }
                             else
                             {
-                                // New view - need to figure out the full key (container.name)
-                                // The incremental API returns just entity set names as keys
-                                group.Views[esName] = newViews[esName];
+                                // New view — build proper "ContainerName.EntitySetName" key
+                                var fullKey = containerName != null
+                                    ? containerName + "." + esName
+                                    : esName;
+                                group.Views[fullKey] = newViews[esName];
                             }
                         }
                     }
@@ -301,7 +310,10 @@ namespace Microsoft.DbContextPackage.Utilities
                     newGroup.EntitySetNames.Add(esName);
                     if (newViews.ContainsKey(esName))
                     {
-                        newGroup.Views[esName] = newViews[esName];
+                        var fullKey = containerName != null
+                            ? containerName + "." + esName
+                            : esName;
+                        newGroup.Views[fullKey] = newViews[esName];
                     }
                 }
 

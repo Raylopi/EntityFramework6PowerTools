@@ -28,7 +28,15 @@ namespace Microsoft.DbContextPackage.Utilities
                 return GenerateVBCode(contextTypeName, mappingHashValue, views);
             }
 
-            return GenerateCSharpCode(contextTypeName, mappingHashValue, views);
+            if (languageOption == LanguageOption.GenerateCSharpCode)
+            {
+                return GenerateCSharpCode(contextTypeName, mappingHashValue, views);
+            }
+
+            throw new System.ArgumentOutOfRangeException(
+                "languageOption",
+                languageOption,
+                "Unsupported language option.");
         }
 
         private static string GenerateCSharpCode(
