@@ -62,6 +62,7 @@
     <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -97,7 +98,12 @@
     <Compile Include="Utilities\DebugCheck.cs" />
     <Compile Include="Utilities\EdmxUtility.cs" />
     <Compile Include="Utilities\FileExtensions.cs" />
+    <Compile Include="Utilities\GroupHashCalculator.cs" />
+    <Compile Include="Utilities\IncrementalViewGenerator.cs" />
     <Compile Include="Utilities\IViewGenerator.cs" />
+    <Compile Include="Utilities\ViewsCacheData.cs" />
+    <Compile Include="Utilities\ViewsCacheManager.cs" />
+    <Compile Include="Utilities\ViewsCodeGenerator.cs" />
     <Compile Include="DbContextPackage.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guids.cs" />
