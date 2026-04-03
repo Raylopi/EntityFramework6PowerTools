@@ -252,30 +252,9 @@ namespace Microsoft.DbContextPackage.Handlers
                 selectedItem,
                 viewsPath =>
                 {
-                    var edmSchemaError = ((Type)mappingCollection.GetType()).Assembly
-                        .GetType("System.Data.Entity.Core.Metadata.Edm.EdmSchemaError", true);
-                    var listOfEdmSchemaError = typeof(List<>).MakeGenericType(edmSchemaError);
-                    var errors = Activator.CreateInstance(listOfEdmSchemaError);
-                    var views = ((Type)mappingCollection.GetType())
-                        .GetMethod("GenerateViews", new[] { listOfEdmSchemaError })
-                        .Invoke(mappingCollection, new[] { errors });
-
-                    foreach (var error in (IEnumerable<dynamic>)errors)
-                    {
-                        if ((int)error.Severity == 1)
-                        {
-                            throw new EdmSchemaErrorException(Strings.Optimize_SchemaError(baseFileName));
-                        }
-                    }
-
-                    var viewGenerator = languageOption == LanguageOption.GenerateVBCode
-                        ? (IViewGenerator)new VBViewGenerator()
-                        : new CSharpViewGenerator();
-                    viewGenerator.ContextTypeName = contextTypeName;
-                    viewGenerator.MappingHashValue = mappingCollection.ComputeMappingHashValue();
-                    viewGenerator.Views = views;
-
-                    File.WriteAllText(viewsPath, viewGenerator.TransformText());
+                    var generator = new IncrementalViewGenerator(
+                        mappingCollection, contextTypeName, baseFileName, languageOption);
+                    generator.Generate(viewsPath);
                 });
         }
 
